@@ -9,5 +9,4 @@
 :smtp_server: 127.0.0.1
 :send_not_found: false
 :not_found_address: notfound@example.com
-:sleep: 0
 :use_headless: true

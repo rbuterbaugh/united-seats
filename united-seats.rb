@@ -7,7 +7,6 @@ require 'yaml'
 require 'net/smtp'
 
 Conf = YAML.load_file("config.yml")
-sleep(Conf[:sleep].to_i)
 
 if Conf[:use_headless]
   headless = Headless.new
