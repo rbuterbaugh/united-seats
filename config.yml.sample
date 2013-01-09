@@ -4,7 +4,7 @@
 :email: login.email@example.com
 :password: YourPassword
 :record_locator: RECLOC
-:segment: 1
+:flight_number: UA1234
 :allow_econ_plus: false
 :smtp_server: 127.0.0.1
 :send_not_found: false

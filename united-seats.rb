@@ -24,12 +24,14 @@ class UnitedSeats
     visit_and_block_text("https://www.united.com/web/en-US/apps/reservation/default.aspx",Conf[:record_locator])
     all('#tblCurrent tr').each do |tr|
       if tr.first(:xpath, ".//span[contains(text(),'#{Conf[:record_locator]}')]")
-        click_and_block_text(tr.find(:xpath, ".//a[contains(text(),'View/Change Seats')]"), "Seat Map")
-        segment_tabs = all(".segmentTab A")
-        if segment_tabs[Conf[:segment].to_i - 1]
-          segment_xpath = "//span[@id='ctl00_ContentInfo_ucSeatEngineSelector_ucFlightDetails_spanCurrentSegment'][text()[contains(.,'#{Conf[:segment]}')]]"
-          click_and_block_xpath(segment_tabs[Conf[:segment].to_i - 1], segment_xpath)
-          check_seats
+        seat_map_xpath = "//h1[@id='ctl00_ContentPageHeading_PageHeader1_h1PageHeading']//span[text()[contains(.,'Seat Map')]]"
+        click_and_block_xpath(tr.find(:xpath, ".//a[contains(text(),'View/Change Seats')]"), seat_map_xpath)
+        all(".segmentTab A").each do |seg|
+          if seg.first(:xpath, ".//div[contains(text(),'#{Conf[:flight_number]}')]")
+            active_flight_xpath = "//ul[@class='segmentTab']//li[@class='active']//div[text()[contains(.,'#{Conf[:flight_number]}')]]"
+            click_and_block_xpath(seg, active_flight_xpath)
+            check_seats
+          end
         end
         break
       end
@@ -53,9 +55,9 @@ class UnitedSeats
     window_available = Conf[:allow_econ_plus] ? econ_window_all > 0 : (econ_window_all - econ_window_plus) > 0
 
     if aisle_available || window_available
-      send_email(Conf[:notify_address],"Non-middle seats available for #{Conf[:record_locator]} segment #{Conf[:segment]}")
+      send_email(Conf[:notify_address],"Non-middle seats available for #{Conf[:record_locator]} flight #{Conf[:flight_number]}")
     elsif Conf[:send_not_found]
-      send_email(Conf[:not_found_address],"Non-middle seats not found for #{Conf[:record_locator]} segment #{Conf[:segment]}")
+      send_email(Conf[:not_found_address],"Non-middle seats not found for #{Conf[:record_locator]} flight #{Conf[:flight_number]}")
     end
   end
 
@@ -75,11 +77,6 @@ END_OF_MESSAGE
 
   def visit_and_block_text(url,text)
     visit(url)
-    has_content?(text)
-  end
-
-  def click_and_block_text(node,text)
-    node.click
     has_content?(text)
   end
 
