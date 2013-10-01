@@ -31,6 +31,7 @@ class UnitedSeats
             active_flight_xpath = "//ul[@class='segmentTab']//li[@class='active']//div[text()[contains(.,'#{Conf[:flight_number]}')]]"
             click_and_block_xpath(seg, active_flight_xpath)
             check_seats
+            exit
           end
         end
         break
@@ -50,12 +51,14 @@ class UnitedSeats
     econ_window_all = all('table.economy tr.windowseats td.available').size
     econ_aisle_plus = all('table.economy tr.asileseats td.available.legroom').size
     econ_window_plus = all('table.economy tr.windowseats td.available.legroom').size
+    econ_aisle_normal = econ_aisle_all - econ_aisle_plus
+    econ_window_normal = econ_window_all - econ_window_plus
 
-    aisle_available = Conf[:allow_econ_plus] ? econ_aisle_all > 0 : (econ_aisle_all - econ_aisle_plus) > 0
-    window_available = Conf[:allow_econ_plus] ? econ_window_all > 0 : (econ_window_all - econ_window_plus) > 0
+    aisle_available = (Conf[:econplus_seats] ? econ_aisle_plus : 0) + (Conf[:normal_seats] ? econ_aisle_normal : 0)
+    window_available = (Conf[:econplus_seats] ? econ_window_plus : 0) + (Conf[:normal_seats] ? econ_window_normal : 0)
 
     if aisle_available || window_available
-      send_email(Conf[:notify_address],"Non-middle seats available for #{Conf[:record_locator]} flight #{Conf[:flight_number]}")
+      send_email(Conf[:notify_address],"Non-middle seats available for #{Conf[:record_locator]} flight #{Conf[:flight_number]} (a:#{aisle_available},w:#{window_available})")
     elsif Conf[:send_not_found]
       send_email(Conf[:not_found_address],"Non-middle seats not found for #{Conf[:record_locator]} flight #{Conf[:flight_number]}")
     end
