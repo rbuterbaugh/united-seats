@@ -57,7 +57,7 @@ class UnitedSeats
     aisle_available = (Conf[:econplus_seats] ? econ_aisle_plus : 0) + (Conf[:normal_seats] ? econ_aisle_normal : 0)
     window_available = (Conf[:econplus_seats] ? econ_window_plus : 0) + (Conf[:normal_seats] ? econ_window_normal : 0)
 
-    if aisle_available || window_available
+    if aisle_available > 0 || window_available > 0
       send_email(Conf[:notify_address],"Non-middle seats available for #{Conf[:record_locator]} flight #{Conf[:flight_number]} (a:#{aisle_available},w:#{window_available})")
     elsif Conf[:send_not_found]
       send_email(Conf[:not_found_address],"Non-middle seats not found for #{Conf[:record_locator]} flight #{Conf[:flight_number]}")
