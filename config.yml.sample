@@ -1,7 +1,7 @@
 ---
 :from_address: no-reply@example.com
 :notify_address: some.address@example.com
-:email: login.email@example.com
+:login: login.email@example.com
 :password: YourPassword
 :record_locator: RECLOC
 :flight_number: UA1234

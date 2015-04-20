@@ -41,7 +41,7 @@ class UnitedSeats
 
   def log_in
     visit("https://www.united.com/web/en-US/apps/account/account.aspx")
-    fill_in 'ctl00_ContentInfo_SignIn_onepass_txtField', :with => Conf[:email]
+    fill_in 'ctl00_ContentInfo_SignIn_onepass_txtField', :with => Conf[:login]
     fill_in 'ctl00_ContentInfo_SignIn_password_txtPassword', :with => Conf[:password]
     click_button 'ctl00_ContentInfo_SignInSecure'
   end
